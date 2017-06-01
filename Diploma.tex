@@ -129,10 +129,11 @@
  \textbf{Предметом} исследования является
  изучение основных принципов построения псевдотрёхмерной картинки
  методом бросания лучей.\\
- 
+
 
 \newpage    %1 глава
 \chapter{Постановка задачи}
+\section{Требования}
 \hspace{\parindent}
 Для визуализации плана помещения существует достаточно много решений. Есть $HTMLMaps$ - 2,5D подобный план помещений, работающий
 на $Joomla~1.5$ поверх $CSS~3$. Его принцип заключается в создании на основе помеченых координат на прямоугольной сетке вида "сверху"
@@ -149,6 +150,12 @@
 быть система поиска маршрута в духе "как пройти из одной аудитории в другую кратчайшим маршрутом". Именно поэтому к проекту были суровые
 требования выполнения всех вышеперечисленных пунктов. \\
 
+Для нашего проекта необходимо было создать подобную интерактивную карту с видом от первого лица. Поскольку современные абитуриенты 
+очень любят компьютерные игры, то в подобных планах с видом от первого лица им будет намного проще ориентироваться чем на обычной 
+"традиционной" бумажной или электронной карте. 
+
+\section{Выбор основного способа реализации}
+\hspace{\parindent}
 В соответствии с требованиями озвученными выше были рассмотрены несколько вариантов рендеринга трёхмерной картинки. Для начала необходимо
 было определиться с 3D-моделированием. 3D-мoделиpoвaние - этo пpoцеcc coздaния тpёхмеpнoй мoдели oбъектa. Зaдaчa 3D-мoделиpoвaния -
 paзpaбoтaть визуaльный oбъёмный oбpaз желaемoгo oбъектa. Гpaфичеcкoе изoбpaжение тpёхмеpных oбъектoв oтличaетcя тем, чтo включaет
@@ -307,8 +314,8 @@ id Software. Движок \textit{Wolfenstein 3D engine} реализует VGA графику (рейтра
 карты "на лету" и многое другое\cite{schirkov}.
 
 \newpage    %2 глава
-\chapter{Математическая модель}
-\section{Способ представления карты}
+\chapter{Алгоритмы, структуры данных и их реализация}
+\section{Математическая модель для представления карты}
 \hspace{\parindent} Поскольку метод бросания лучей работает с двумерной моделью помещения, необходимо было придумать способ
 представления карты для его адекватного считывания подпрограммой считывания уровня и представления функцией обработки. Для
 классического рейкастинга уровень представляет собой двумерный массив, где значение каждого элемента массива является квадратом
@@ -391,7 +398,7 @@ $QCad$. $QCad$ — 2-мерная САПР с открытым исходным кодом, предназначенная для со
 \end{figure}
 
 \newpage
-\section{Рейкастинг как алгоритм отрисовки}
+\section{Рейкастинг как алгоритм отрисовки 3D-карты}
 \hspace{\parindent} Итак, в общем случае у нас на карте задан уровень в виде множества отрезков, а также задана точка,
 интерпретирующая положение камеры на карте. Также задан угол обзора, показывающий какие сегменты попали в наблюдение
 камеры.\\
@@ -454,7 +461,162 @@ $QCad$. $QCad$ — 2-мерная САПР с открытым исходным кодом, предназначенная для со
 \end{figure}
 
 \newpage
-\section{BSP-дерево}
+\section{Алгоритм отрисовки текстур стен}
+\hspace{\parindent} При нанесении текстур алгоритм рейкастинга работает практически такая же, но в конце необходимо
+произвести несколько дополнительных вычислений текстуры; кроме того, петля в направлении у должна пройти через каждый
+пиксель для определения того, какой тексель (пиксель текстуры) данной текстуры необходимо использовать в этот раз.\\
+
+Вертикальные полосы на этот раз нельзя нарисовать с помощью вертикальной командной линии. Вместо этого, каждый пиксель
+необходимо рисовать отдельно. Лучший способ - использовать в этот раз карту 2D в качестве буфера экрана, и сразу же
+копировать ее на экран.\\
+
+Конечно же, нам необходим собственно, сам набор текстур, и поскольку функция $makeColumn$, которая наносит текстуры,
+работает с отдельными целыми значениями для цветов (вместо 3-х отдельных байтов для R, G и B), текстуры хранятся также
+в формате $RGB$.\\
+
+Ширина и высота экрана для текстур определяется в самом начале, поскольку нам нужна одна и та же величина для функции
+экрана и для создания буфера экрана. Кроме того, новыми являются текстура ширины и высоты, определяемые здесь. Очевидно,
+это - ширина и высота в текселях (элементах) текстур.\\
+
+Буфер экрана и наборы текстур - это набор динамических массивов-векторов $STD$ ($std::vectors$). Каждая из текстур обладает
+определенными показателями ширины и высоты (в пикселях). В придуманном нами механизме рейкастинга текстуры могут иметь
+неограниченный размер, и ограничиваются только весом, ограничением времени и скоростью взаимодействия с ними. Наиболее
+оптимальным размером текстур оказался 512х512 пикселей, поскольку такое разрешение даёт достаточное качество картинки без
+замедления FPS(частоты смены кадров).\\
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=8cm]{Textures_1}\\
+\caption{Неоптимизованное текстурирование}
+\end{center}
+\end{figure}
+
+Обычно сами текстуры отрисовываются в виде горизонтальных строк пикселей, но в случае рейкастинга, текстуры изображаются в
+виде вертикальных линий. Таким образом, чтобы оптимально использовать кэш центрального процессора, а также избежать пропусков
+страниц (avoid page misses), более эффективным может оказаться хранение текстур в памяти в виде набора вертикальных полос
+вместо горизонтальных строк пикселей\cite{kotov}. Для этого после генерирования текстур необходимо поменять их значения $x$ и $y$.\\
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=8cm]{Textures_2}\\
+\caption{Оптимизованное текстурирование}
+\end{center}
+\end{figure}
+
+\newpage
+\section{Интерактивное движение камеры}
+\hspace{\parindent} Для передвижения в среде полученого движка используется метод сдвига координат. Его суть банальна и сводится к
+следующим геометрическим манипуляциям: изменению координат $x$ и $y$ камеры на карте, изменения угла поворота камеры, замеры скорости
+перемещения камеры по пространству уровня для спидрана(англ. Speed Run - скоростное перемещение). Скорость перемещения камеры, а равно
+и игрока изменяется на константную величину, регулируя которую в файле конфигурации меняем скорость перемещения по карте.\\
+
+Для передвижения по карте необходимо определить угол обзора относительно координатной оси, и, в зависимости от него изменить на
+соответствующий коэфициент координаты  $x$ и $y$. В нашем движке это определяется так: заранее в классе игрока Player определяется
+точка местоположения игрока $pos$ и угол $dir$, задающийся нулём, что будет означать что камера смотрит точно по направлению оси $Y$. Так же
+задаются переменные $dx$ и $dy$, определяющие изменение координат камеры, а так же переменную $ddir$, которая определяет изменение угла,
+математический смысл которой $\Delta dir$. \\
+
+Функция описывающая изменение координат называется $Update$. При вызове этой функции, которая получает новые координаты в зависимости от
+времени изменения кардров, движения или отсутствия движения камеры, определяются изменения $dx$ и $dy$ и добавляются с определённой
+задержкой к основным координатам камеры, для получения плавного передвижения, а так же прибавляется изменение угла в зависимости от
+времени. После вышеперечисленых манипуляций переменные $dx$, $dy$ и $ddir$ обнуляются. В коде это определяется так: \\
+
+\begin{lstlisting}
+void Player::update(double &time) {
+    pos.setX(pos.x() + dx*time*0.1);
+    pos.setY(pos.y() + dy*time*0.1);
+    dir += (ddir*time*(-0.00001));
+    ddir=0;
+    dx=0;
+    dy=0;
+    time = 0;
+}
+\end{lstlisting}
+
+Переменные $dx$ и $dy$ изменяются в части кода, отвечающей за интерактивное воздействие через нажатие клавиш и повороты мышью.
+Изменение угла зависит от поворота вектора $\overline{dir}$, который можно описать следующим шаблоном:\\
+
+\begin{equation*}
+\begin{vmatrix}
+cos(\alpha) & -sin(\alpha)\\
+sin(\alpha) & cos(\alpha)
+\end{vmatrix}
+\end{equation*}
+
+Развёртка клавиатурных сочетаний была выбрана стандартная игровая расстановка $WASD$, для лучшей адаптации. При нажатии клавиши
+$W$ камера должна двинуться вперёд. Изменение координат $dx$ и $dy$ фиксируется следующим образом:\\
+
+\begin{lstlisting}
+ if (event->key() == Qt::Key_W) {
+        RP->player->setDX(cos(RP->player->getDir()));
+        RP->player->setDY(sin(RP->player->getDir()));
+ }
+\end{lstlisting}
+
+При нажатии клавиши $S$ камера должна двинуться назад. Изменение координат $dx$ и $dy$ фиксируется следующим образом:\\
+
+\begin{lstlisting}
+ if (event->key() == Qt::Key_S) {
+        RP->player->setDX(-cos(RP->player->getDir()));
+        RP->player->setDY(-sin(RP->player->getDir()));
+ }
+\end{lstlisting}
+
+При нажатии клавиши $D$ камера должна повернуться направо, и широта угла поворота определяется длительностью нажатия.
+Изменение координат $dx$ и $dy$ фиксируется следующим образом:\\
+
+\begin{lstlisting}
+  if (event->key() == Qt::Key_D) {
+        RP->player->setDX(sin(RP->player->getDir()));
+        RP->player->setDY(-cos(RP->player->getDir()));
+ }
+\end{lstlisting}
+
+При нажатии клавиши $A$ камера должна двинуться повернуться направо, и широта угла поворота определяется длительностью нажатия.
+Изменение координат $dx$ и $dy$ фиксируется следующим образом:\\
+
+\begin{lstlisting}
+ if (event->key() == Qt::Key_A) {
+        RP->player->setDX(-sin(RP->player->getDir()));
+        RP->player->setDY(cos(RP->player->getDir()));
+ }
+\end{lstlisting}
+
+При отпускании клавиш изменения прекращаются, и координаты не меняются. Всё это проделывается каждый раз для каждого фрейма(кадра).
+
+\section{Способ реализации динамической карты}
+\hspace{\parindent} Для движения сегментов в поле рисовки динамически изменяются координаты необходимого сегмента.
+Поскольку каждый сегмент задаётся двумя точками $A(x_1,y_1)$ и $B(x_2,y_2)$, при перемещении новые координаты задаются
+уже другими точками: $\widetilde{A}(\widetilde{x}_1,\widetilde{y}_1)$ и $B(x_2,y_2)$ при перемещении точки $A$,
+$A(x_1,y_1)$ и $\widetilde{B}(\widetilde{x}_2,\widetilde{y}_2)$ при перемещении точки $B$, и
+$\widetilde{A}(\widetilde{x}_1,\widetilde{y}_1)$ и $\widetilde{B}(\widetilde{x}_2,\widetilde{y}_2)$ при перемщении обоих
+точек. Длина сегмента не изменяется и задаётся формулой $d=\sqrt{(x_2 - x_1)^2+(y_2 - y_1)^2}$. При повороте одной точки
+$A(x_1,y_1)$, изменённая координата $\widetilde{A}$ принимает коодинаты: $(\widetilde{x}_1=x_1+\cos\alpha,\widetilde{y}_1=y+\sin\alpha)$,
+где угол $\alpha$ - угол между осью $oX$ и самим сегментом. При движении другой точки происходят аналогичные преобразования
+с учётом длины сегмента $d$. И эти манипуляции производятся каждый тик внутрисистемного времени с зависимостью от
+необходимой скорости вращения\cite{kust}.
+
+\begin{lstlisting}
+void MovableSegment::update(double &time){
+    time = qBound(1.,time,200.);
+    if (l1 > l2) {
+        if (l+du*time<=l2) {
+            l = l2;
+            setB(QPointF(cos(l)*len + A().x(),
+            sin(l)*len + A().y()));
+            return;}}else {
+        if (l+du*time>=l2) {
+            l = l2;
+            setB(QPointF(cos(l)*len + A().x(),
+            sin(l)*len + A().y()));
+            return;}} l+=du*time;
+    setB(QPointF(cos(l)*len + A().x(),
+    sin(l)*len + A().y())); }
+\end{lstlisting}
+
+
+\newpage
+\section{Использование BSP-дерева для отсечения лишних циклов отрисовки}
 \hspace{\parindent} После реализации алгоритма рейкастинга картинка была крайне нестабильной. Дело в том, что в угол
 обзора попадало разное количество обрабатываемых сегментов, и количество кадров в секунду было различным для разных
 мест уровня. Для решения этой проблемы было принято решение использовать оптимизирующий алгоритм, и одним из вариантов
@@ -615,131 +777,9 @@ cцeны (будь тo cимулятoр пoлётa или пeрcoнaж в игрe, ocмaтривaющий oкружaющий ми
 упрocтить вид oбъeктoв рaccмaтривaeмoгo пeйзaжa, пoэтoму дaлee будeм cчитaть, чтo в 3D мы рaбoтaeм тoлькo c мнoгoгрaнникaми,
 грaни кoтoрых ужe триaнгулирoвaны. Тaким oбрaзoм мнoжecтвo $S$ в трёхмeрнoм прocтрaнcтвe будeт cocтoять тoлькo из трeугoльникoв\cite{demin}.
 
-\newpage
-\section{Алгоритм текстурирования}
-\hspace{\parindent} При нанесении текстур алгоритм рейкастинга работает практически такая же, но в конце необходимо
-произвести несколько дополнительных вычислений текстуры; кроме того, петля в направлении у должна пройти через каждый
-пиксель для определения того, какой тексель (пиксель текстуры) данной текстуры необходимо использовать в этот раз.\\
 
-Вертикальные полосы на этот раз нельзя нарисовать с помощью вертикальной командной линии. Вместо этого, каждый пиксель
-необходимо рисовать отдельно. Лучший способ - использовать в этот раз карту 2D в качестве буфера экрана, и сразу же
-копировать ее на экран.\\
 
-Конечно же, нам необходим собственно, сам набор текстур, и поскольку функция $makeColumn$, которая наносит текстуры,
-работает с отдельными целыми значениями для цветов (вместо 3-х отдельных байтов для R, G и B), текстуры хранятся также
-в формате $RGB$.\\
-
-Ширина и высота экрана для текстур определяется в самом начале, поскольку нам нужна одна и та же величина для функции
-экрана и для создания буфера экрана. Кроме того, новыми являются текстура ширины и высоты, определяемые здесь. Очевидно,
-это - ширина и высота в текселях (элементах) текстур.\\
-
-Буфер экрана и наборы текстур - это набор динамических массивов-векторов $STD$ ($std::vectors$). Каждая из текстур обладает
-определенными показателями ширины и высоты (в пикселях). В придуманном нами механизме рейкастинга текстуры могут иметь
-неограниченный размер, и ограничиваются только весом, ограничением времени и скоростью взаимодействия с ними. Наиболее
-оптимальным размером текстур оказался 512х512 пикселей, поскольку такое разрешение даёт достаточное качество картинки без
-замедления FPS(частоты смены кадров).\\
-
-\begin{figure}[h!]
-\begin{center}
-\includegraphics[width=8cm]{Textures_1}\\
-\caption{Неоптимизованное текстурирование}
-\end{center}
-\end{figure}
-
-Обычно сами текстуры отрисовываются в виде горизонтальных строк пикселей, но в случае рейкастинга, текстуры изображаются в
-виде вертикальных линий. Таким образом, чтобы оптимально использовать кэш центрального процессора, а также избежать пропусков
-страниц (avoid page misses), более эффективным может оказаться хранение текстур в памяти в виде набора вертикальных полос
-вместо горизонтальных строк пикселей\cite{kotov}. Для этого после генерирования текстур необходимо поменять их значения $x$ и $y$.\\
-
-\begin{figure}[h!]
-\begin{center}
-\includegraphics[width=8cm]{Textures_2}\\
-\caption{Оптимизованное текстурирование}
-\end{center}
-\end{figure}
-
-\newpage
-\section{Паттерн для интерактивного взаимодействия}
-\hspace{\parindent} Для передвижения в среде полученого движка используется метод сдвига координат. Его суть банальна и сводится к
-следующим геометрическим манипуляциям: изменению координат $x$ и $y$ камеры на карте, изменения угла поворота камеры, замеры скорости
-перемещения камеры по пространству уровня для спидрана(англ. Speed Run - скоростное перемещение). Скорость перемещения камеры, а равно
-и игрока изменяется на константную величину, регулируя которую в файле конфигурации меняем скорость перемещения по карте.\\
-
-Для передвижения по карте необходимо определить угол обзора относительно координатной оси, и, в зависимости от него изменить на
-соответствующий коэфициент координаты  $x$ и $y$. В нашем движке это определяется так: заранее в классе игрока Player определяется
-точка местоположения игрока $pos$ и угол $dir$, задающийся нулём, что будет означать что камера смотрит точно по направлению оси $Y$. Так же
-задаются переменные $dx$ и $dy$, определяющие изменение координат камеры, а так же переменную $ddir$, которая определяет изменение угла,
-математический смысл которой $\Delta dir$. \\
-
-Функция описывающая изменение координат называется $Update$. При вызове этой функции, которая получает новые координаты в зависимости от
-времени изменения кардров, движения или отсутствия движения камеры, определяются изменения $dx$ и $dy$ и добавляются с определённой
-задержкой к основным координатам камеры, для получения плавного передвижения, а так же прибавляется изменение угла в зависимости от
-времени. После вышеперечисленых манипуляций переменные $dx$, $dy$ и $ddir$ обнуляются. В коде это определяется так: \\
-
-\begin{lstlisting}
-void Player::update(double &time) {
-    pos.setX(pos.x() + dx*time*0.1);
-    pos.setY(pos.y() + dy*time*0.1);
-    dir += (ddir*time*(-0.00001));
-    ddir=0;
-    dx=0;
-    dy=0;
-    time = 0;
-}
-\end{lstlisting}
-
-Переменные $dx$ и $dy$ изменяются в части кода, отвечающей за интерактивное воздействие через нажатие клавиш и повороты мышью.
-Изменение угла зависит от поворота вектора $\overline{dir}$, который можно описать следующим шаблоном:\\
-
-\begin{equation*}
-\begin{vmatrix}
-cos(\alpha) & -sin(\alpha)\\
-sin(\alpha) & cos(\alpha)
-\end{vmatrix}
-\end{equation*}
-
-Развёртка клавиатурных сочетаний была выбрана стандартная игровая расстановка $WASD$, для лучшей адаптации. При нажатии клавиши
-$W$ камера должна двинуться вперёд. Изменение координат $dx$ и $dy$ фиксируется следующим образом:\\
-
-\begin{lstlisting}
- if (event->key() == Qt::Key_W) {
-        RP->player->setDX(cos(RP->player->getDir()));
-        RP->player->setDY(sin(RP->player->getDir()));
- }
-\end{lstlisting}
-
-При нажатии клавиши $S$ камера должна двинуться назад. Изменение координат $dx$ и $dy$ фиксируется следующим образом:\\
-
-\begin{lstlisting}
- if (event->key() == Qt::Key_S) {
-        RP->player->setDX(-cos(RP->player->getDir()));
-        RP->player->setDY(-sin(RP->player->getDir()));
- }
-\end{lstlisting}
-
-При нажатии клавиши $D$ камера должна повернуться направо, и широта угла поворота определяется длительностью нажатия.
-Изменение координат $dx$ и $dy$ фиксируется следующим образом:\\
-
-\begin{lstlisting}
-  if (event->key() == Qt::Key_D) {
-        RP->player->setDX(sin(RP->player->getDir()));
-        RP->player->setDY(-cos(RP->player->getDir()));
- }
-\end{lstlisting}
-
-При нажатии клавиши $A$ камера должна двинуться повернуться направо, и широта угла поворота определяется длительностью нажатия.
-Изменение координат $dx$ и $dy$ фиксируется следующим образом:\\
-
-\begin{lstlisting}
- if (event->key() == Qt::Key_A) {
-        RP->player->setDX(-sin(RP->player->getDir()));
-        RP->player->setDY(cos(RP->player->getDir()));
- }
-\end{lstlisting}
-
-При отпускании клавиш изменения прекращаются, и координаты не меняются. Всё это проделывается каждый раз для каждого фрейма(кадра).
-
-\section{Поиск оптимального пути}
+\section{Алгоритм Дейкстры для поиска оптимального маршрута}
 \hspace{\parindent} Для поиска оптимального маршрута на карте задача была сведена к стандартной задаче поиска оптимального маршрута
 по графу. Пo cвoей cути aлгopитм пoиcкa пути ищет нa гpaфе, нaчинaя c oднoй (cтapтoвoй) тoчки и иccледуя cмежные узлы дo тех пop,
 пoкa не будет дocтигнут узел нaзнaчения (кoнечный узел). Кpoме тoгo, в aлгopитмы пoиcкa пути в бoльшинcтве cлучaев зaлoженa тaкже
@@ -926,39 +966,9 @@ Cложноcть aлгоpитмa Дeйкcтpы зaвиcит от cпоcобa нaхождeния вepшины $v$, a тaкжe 
 строится по отрезкам означающим двери на карте. Благодаря такому удобному подходу, поиск маршрута сводится к заданию
 маршрута между различными дверями на карте\cite{knuth}.
 
-\section{Движение сегментов}
-\hspace{\parindent} Для движения сегментов в поле рисовки динамически изменяются координаты необходимого сегмента.
-Поскольку каждый сегмент задаётся двумя точками $A(x_1,y_1)$ и $B(x_2,y_2)$, при перемещении новые координаты задаются
-уже другими точками: $\widetilde{A}(\widetilde{x}_1,\widetilde{y}_1)$ и $B(x_2,y_2)$ при перемещении точки $A$,
-$A(x_1,y_1)$ и $\widetilde{B}(\widetilde{x}_2,\widetilde{y}_2)$ при перемещении точки $B$, и
-$\widetilde{A}(\widetilde{x}_1,\widetilde{y}_1)$ и $\widetilde{B}(\widetilde{x}_2,\widetilde{y}_2)$ при перемщении обоих
-точек. Длина сегмента не изменяется и задаётся формулой $d=\sqrt{(x_2 - x_1)^2+(y_2 - y_1)^2}$. При повороте одной точки
-$A(x_1,y_1)$, изменённая координата $\widetilde{A}$ принимает коодинаты: $(\widetilde{x}_1=x_1+\cos\alpha,\widetilde{y}_1=y+\sin\alpha)$,
-где угол $\alpha$ - угол между осью $oX$ и самим сегментом. При движении другой точки происходят аналогичные преобразования
-с учётом длины сегмента $d$. И эти манипуляции производятся каждый тик внутрисистемного времени с зависимостью от
-необходимой скорости вращения\cite{kust}.
-
-\begin{lstlisting}
-void MovableSegment::update(double &time){
-    time = qBound(1.,time,200.);
-    if (l1 > l2) {
-        if (l+du*time<=l2) {
-            l = l2;
-            setB(QPointF(cos(l)*len + A().x(),
-            sin(l)*len + A().y()));
-            return;}}else {
-        if (l+du*time>=l2) {
-            l = l2;
-            setB(QPointF(cos(l)*len + A().x(),
-            sin(l)*len + A().y()));
-            return;}} l+=du*time;
-    setB(QPointF(cos(l)*len + A().x(),
-    sin(l)*len + A().y())); }
-\end{lstlisting}
-
 \newpage    %3 глава
-\chapter{Реализация}
-\section{Инструментарий}
+\chapter{Реализация проекта}
+\section{Используемые инструменты и технологии}
 \hspace{\parindent} Для создания проекта был выбран язык программирования \\$C++`14$ с фреймворком $Qt~5.8$. $Qt$ это кроссплатформеный
 инструментарий для разработки ПО на языке $C++$, в данной редакции используется язык $C++$ в редакции $ISO/IEC~JTC1$ (полное название:
 $ International~\\Standard~ISO/IEC~14882:2014(E)~Programming~Language~C++$)\cite{straus}. \\
@@ -1085,7 +1095,7 @@ pелизoв и для быстpoгo испpaвления пpoблем в пpoизвoдственнoй веpсии пpилoжения.
 дoлжны вливaться\cite{git}.
 
 \newpage
-\section{Структура проекта (UML)}
+\section{Диаграмма компонентов проекта (UML)}
 
 \begin{figure}[h!]
 \begin{center}
@@ -1144,7 +1154,7 @@ $JavaScript$. Подобные проекты с уникальной кодовой базой под разные платформы к
 разработка для нас.
 
 \newpage
-\section{Производительность}
+\section{Измерение производительности}
 \hspace{\parindent} После реализации нашего проекта были произведены замеры производительности на разных платформах с разным
 железом. Производительность нативной версии была произведена по показателям потребляемой памяти, процентов загрузки процессора
 и выдаваемым FPS(количества кадров в секунду). Отсутствие замеров производительности по видеокарте были излишними, поскольку
@@ -1319,7 +1329,7 @@ $Microsoft~Edge$ & 30.6 Mbyte & 34-51 \\
 
 
 \newpage
-\section{Внедрение ссылки на сайт ИМИ БГУ}
+\section{Размещение интерактивной карты на сайте ИМИ БГУ}
 \hspace{\parindent} Итоговой частью работы стало внедрение полученной веб-версии на сайт ИМИ. Поскольку сама
 реализация проекта выглядит как $JavaScript$ - скрипт встраиваемый в $HTML$ - форму, было решено отказаться
 от реализации сложного сайта в виде какой-либо $CMS$ в сторону простой $HTML$ страницы, содержащей в себе
@@ -1621,8 +1631,8 @@ setPos(this->pos() - QPointF(cos(dir), sin(dir)));}
 #include "movablesegment.h"
 #include <QDebug>
 MovableSegment::MovableSegment(SSegment *parent){}
-MovableSegment::MovableSegment(QPointF a, QPointF b, 
-QPointF moveCentre, int texture, double l1, double l2, 
+MovableSegment::MovableSegment(QPointF a, QPointF b,
+QPointF moveCentre, int texture, double l1, double l2,
 double speed, SSegment *parent) : SSegment(a,b,texture){
 mvPt = moveCentre;
 this->l1 = l1;this->l2 = l2;
@@ -1645,16 +1655,16 @@ setB(QPointF(cos(l)*len + A().x(), sin(l)*len + A().y()));}
 \begin{lstlisting}
 #include "mygeom.h"
 #include <QDebug>
-double vec( QPointF a,  QPointF b,  QPointF c)  
-{return (b.x()-a.x())*(c.y()-b.y()) - 
+double vec( QPointF a,  QPointF b,  QPointF c)
+{return (b.x()-a.x())*(c.y()-b.y()) -
 (b.y()-a.y())*(c.x()-b.x());}
-double getDist( QPointF a,  QPointF b)                    
-{return sqrt((b.x()-a.x())*(b.x()-a.x()) + 
+double getDist( QPointF a,  QPointF b)
+{return sqrt((b.x()-a.x())*(b.x()-a.x()) +
 (b.y()-a.y())*(b.y()-a.y()));}
-double getSquaredDist( QPointF a, QPointF b)                    
-{return ((b.x()-a.x())*(b.x()-a.x()) + 
+double getSquaredDist( QPointF a, QPointF b)
+{return ((b.x()-a.x())*(b.x()-a.x()) +
 (b.y()-a.y())*(b.y()-a.y()));}
-double getAngleBetweenTwoPt(const QPointF &a, 
+double getAngleBetweenTwoPt(const QPointF &a,
 const QPointF &b){QPointF v = b-a;
 double angle = atan(v.y()/v.x());
 return b.y() > a.y() ? angle : angle + PI;}
@@ -1664,11 +1674,11 @@ double A = getSquaredDist(b,c);
 double B = getSquaredDist(a,c);
 double C = getSquaredDist(b,a);
 return acos((B + C - A)/(sqrt(B)*sqrt(C)*2));}
-QPointF getIntersectionOfLines (QPointF a, 
+QPointF getIntersectionOfLines (QPointF a,
 QPointF b, QPointF c, QPointF d){
 double A1 = a.y() - b.y(),
 B1 = b.x() - a.x(),
-C1 = -A1*a.x() - B1*a.y(); 
+C1 = -A1*a.x() - B1*a.y();
 double A2 = c.y() - d.y(),
 B2 = d.x() - c.x(),
 C2 = -A2*c.x() - B2*c.y();
@@ -1735,10 +1745,10 @@ castRays(player->getPos(), player->getPtDir(), WIDTH);}
 void RaycastingPainter::
 castRays(QPointF position, QPointF direction, int width){
 QPointF rayStep = QPointF( /** (A,B) ---> (B,-A) **/
-(direction-position).y(),  
--(direction-position).x())*1.5/width; 
-double dist = INF;  
-QVector <int> seg; 
+(direction-position).y(),
+-(direction-position).x())*1.5/width;
+double dist = INF;
+QVector <int> seg;
 QPointF leftViewSide  (direction-(rayStep*width/2)),
 rightViewSide (direction+(rayStep*width/2));
 for (int i=0; i<m_scene->getMapSegment().size(); i++) {
@@ -1770,7 +1780,7 @@ getMapSegment(seg[j]).A());dist = dst;}}
 double k1 = getDist(QPointF(0,0),rayStep*i),
 k2 = getDist(position, direction),
 gg = sqrt(k1*k1 + k2*k2);
-makeColumn(dist*(k2/gg),width/2-i-1, 
+makeColumn(dist*(k2/gg),width/2-i-1,
 texture_id, columnWidthId);dist = INF;
 columnWidthId = 0;texture_id = -1;
 QPointF rayDirect2 (direction + rayStep*(i+1));
@@ -1785,7 +1795,7 @@ getMapSegment(seg[j]).getTexture();
 columnWidthId = getDist(intersectPt,m_scene->
 getMapSegment(seg[j]).A());
 dist = dst;}}
-makeColumn(dist*(k2/gg),i+width/2, 
+makeColumn(dist*(k2/gg),i+width/2,
 texture_id, columnWidthId);
 dist = INF;}this->update();}
 void RaycastingPainter::makeColumn
@@ -1817,7 +1827,7 @@ QImage RaycastingPainter::getRbuffer() {return rbuffer;}
 void RaycastingPainter::setRbuffer
 (const QImage &value) {rbuffer = value;}
 Scene *RaycastingPainter::scene() {return m_scene;}
-void RaycastingPainter::setScene(Scene *scene) 
+void RaycastingPainter::setScene(Scene *scene)
 {m_scene = scene;}
 \end{lstlisting}
 
@@ -1831,7 +1841,7 @@ void RaycastingPainter::setScene(Scene *scene)
 Scene::Scene(){
 QFile mapTxt("/home/chetca/Projects/
 Raycasting_Plan-test/second.map");
-if (!mapTxt.open(QIODevice::ReadOnly)) 
+if (!mapTxt.open(QIODevice::ReadOnly))
 {qDebug() << "file can't be opened";}
 else {qDebug() << "successfull opening file !";}
 bool FF=0;while (!mapTxt.atEnd()) {
@@ -1849,9 +1859,9 @@ return mapSegment;}
 MovableSegment Scene::getMapSegment(int i){
 if (i>=0 && i<mapSegment.size()) {
 return mapSegment[i];}
-qDebug() << "mapSegment [" << i << "] 
+qDebug() << "mapSegment [" << i << "]
 doesn't exist, motherfacka !!!!";}
-void Scene::setMapSegment(const 
+void Scene::setMapSegment(const
 QVector<MovableSegment> &value)
 {mapSegment = value;}
 int Scene::getCnt()
@@ -1990,8 +2000,8 @@ class MovableSegment : public SSegment
 {
 public:
     MovableSegment(SSegment *parent=0);
-    MovableSegment(QPointF a, QPointF b, QPointF moveCentre, 
-    int texture=0, double l1=0, double l2=0, double speed=0, 
+    MovableSegment(QPointF a, QPointF b, QPointF moveCentre,
+    int texture=0, double l1=0, double l2=0, double speed=0,
     SSegment *parent=0);
 
 private:
@@ -2000,7 +2010,7 @@ private:
 public:
     QPointF mvPt;   // centre of moving
     double du;      // speed of moving
-    double l1,l2;   // between that angles move will execute 
+    double l1,l2;   // between that angles move will execute
     (if l1>l2 then segment moves clockwise, else ccw)
     double l;       // current angle
     double len;
@@ -2029,20 +2039,20 @@ public:
 #define HEIGHT 720
 #define WORLDSIZE 5000.
 
-double  vec                      
+double  vec
 ( QPointF a,  QPointF b,  QPointF c);
-double  getDist                  
+double  getDist
 ( QPointF a,  QPointF b);
-double  getSquaredDist           
+double  getSquaredDist
 ( QPointF a,  QPointF b);
-double  getAngleBetweenTwoPt     
+double  getAngleBetweenTwoPt
 (const QPointF &a, const QPointF &b);
-double  getAngleBetween3Pts      
-(const QPointF &a, const QPointF &b, 
+double  getAngleBetween3Pts
+(const QPointF &a, const QPointF &b,
 const QPointF &c); //angle = (b,a,c);
-QPointF getIntersectionOfLines   
+QPointF getIntersectionOfLines
 (QPointF a, QPointF b, QPointF c, QPointF d);
-QPointF rayIntersect             
+QPointF rayIntersect
 (QPointF a, QPointF b, SSegment ss);
 
 #endif // MYGEOM
@@ -2127,10 +2137,10 @@ public:
 
     Scene *scene();
     void setScene(Scene *scene);
-    void castRays(QPointF position, QPointF 
+    void castRays(QPointF position, QPointF
     direction, int width);
 
-    void makeColumn(double dist, int i, 
+    void makeColumn(double dist, int i,
     int texture, double e);
     void updateScene(double time);
 private:
@@ -2241,19 +2251,19 @@ var MS_PER_UPDATE = 1000 / 60; //фпс
 
 var rayc = function() {
   var currentTime = Date.now(); //время текущего кадрв
-  var elapsedTime = 
+  var elapsedTime =
   currentTime - previousTime; //разница между временем кадров
-  previousTime = currentTime; 
+  previousTime = currentTime;
   //при обновлении время текущего кадра становится предыдущим
   lag += elapsedTime; //суммируем лаги
 
   processInput(); //запуск движения
 
-  //следующий код является по идее костылём от лагов, 
+  //следующий код является по идее костылём от лагов,
   //но он недопилен
-  while (lag >= MS_PER_UPDATE) { 
+  while (lag >= MS_PER_UPDATE) {
   //пока лагов больше чем фпс(то есть пока тормозит)
-    update(); 
+    update();
     //заглушка которая фиксит тормоза - обновлялка кадров
     lag -= MS_PER_UPDATE; //уменьшаем лаги
   }
@@ -2268,23 +2278,23 @@ function update(){} //Заглушка
 var player={
     x : 46, //Координаты игрока
     y : 7,
-    mov : 0, 
-    //движение: 1 - вперёд, -1 назад, 
+    mov : 0,
+    //движение: 1 - вперёд, -1 назад,
     //0 - стоим на месте(для клавиш)
-    dir : 0, 
-    //Повороты: 1 - вправо, -1 - влево, 
+    dir : 0,
+    //Повороты: 1 - вправо, -1 - влево,
     //0 - стоим на месте(тоже дял клавиш)
-    rot : -1.5, 
+    rot : -1.5,
     //угол поворота камеры в начале
-    speed: 0.05, 
+    speed: 0.05,
     //скорость движения камеры
-    sprint: 0, 
+    sprint: 0,
     //бег: 1 - бежим, 0 - идём(придумал Дугар)
-    sprintFactor: 2, 
+    sprintFactor: 2,
     //коэфициент увеличения движения при беге
-    rotSpeed: 2 * Math.PI / 180, 
+    rotSpeed: 2 * Math.PI / 180,
     //скорость поворотов
-    fov : 60 * Math.PI / 180, 
+    fov : 60 * Math.PI / 180,
     //Угол обзора(тут косяк с фишаем)
     flatmap : 0,
   };
@@ -2298,7 +2308,7 @@ function bindKeys(){
       //стрелка влево
         break;
       case 87: //W
-      case 38: player.mov = 1; 
+      case 38: player.mov = 1;
       //стрелка вверх
         break;
       case 68: //D
@@ -2309,13 +2319,13 @@ function bindKeys(){
       case 40: player.mov = -1;
       //стрелка вниз
         break;
-      case 16: player.sprint = 1; 
+      case 16: player.sprint = 1;
       //Shift
       break;
-      case 77: player.flatmap = 
+      case 77: player.flatmap =
       (player.flatmap) ? 0 : 1;
       break;
-      //Прикольная фича 
+      //Прикольная фича
       //для показывания плоской карты
     }
 
@@ -2343,18 +2353,18 @@ function bindKeys(){
 }
 
 function processInput(){
-  var step = player.mov * 
-  player.speed * (player.sprint +1) * 
-  player.sprintFactor; 
+  var step = player.mov *
+  player.speed * (player.sprint +1) *
+  player.sprintFactor;
   //шаг вперёд или назад
-  var rotStep = player.dir * 
-  player.rotSpeed; 
+  var rotStep = player.dir *
+  player.rotSpeed;
   //поворот при шаге
 
-  player.rot = addRotToAngle(rotStep, player.rot); 
+  player.rot = addRotToAngle(rotStep, player.rot);
   //И получаем направление куда направлена камера
 
-  var xNew = player.x + step * Math.cos(player.rot); 
+  var xNew = player.x + step * Math.cos(player.rot);
   //расчитываем новые координаты игрока
   var yNew = player.y - step * Math.sin(player.rot);
 
@@ -2365,33 +2375,33 @@ function processInput(){
   }
 }
 
-function addRotToAngle(rot, angle){ 
+function addRotToAngle(rot, angle){
 //Функция нормализирования угла
 //(Этого не хватало в сишной версии движка)
   //Это что-то типа (pos+dir) в сишной версии
-  var newAngle = angle + rot; 
-  //Итоговый угол получается из суммы угла 
+  var newAngle = angle + rot;
+  //Итоговый угол получается из суммы угла
   //начального и угла полученого после поворота
   //Если получившийся угол:
-  if (newAngle < 0){ 
+  if (newAngle < 0){
   //отрицательным, то
-    return newAngle + 360 * Math.PI /180; 
+    return newAngle + 360 * Math.PI /180;
   }
-  if (newAngle > 360 * Math.PI / 180){ 
-    return newAngle - 360 * Math.PI /180; 
+  if (newAngle > 360 * Math.PI / 180){
+    return newAngle - 360 * Math.PI /180;
   }
   return newAngle;
 }
 
-function hitWall(x, y) { 
+function hitWall(x, y) {
   /*
-  if (x < 0 || x >= map[0].length || 
+  if (x < 0 || x >= map[0].length ||
   y < 0 || y >= map.length){
     return true;
   }
   */
   /*
-  if(map[Math.floor(y)][Math.floor(x)] == 0 || 
+  if(map[Math.floor(y)][Math.floor(x)] == 0 ||
   map[Math.floor(y)][Math.floor(x)] > 1)
 	  return false;
   else
@@ -2399,86 +2409,86 @@ function hitWall(x, y) {
   */
   return map[Math.floor(y)][Math.floor(x)] != 0;
 }
-function render(){ 
-  drawBackground(); 
-  castRays(); 
-  if(player.flatmap) drawMap(); 
+function render(){
+  drawBackground();
+  castRays();
+  if(player.flatmap) drawMap();
 }
 function drawBackground(){
-  ctx.clearRect(0, 0, canvas.width, canvas.height); 
-  ctx.fillStyle = '#E3E3E1'; 
-  ctx.fillRect(0, 0, canvas.width, canvas.height /2); 
-  ctx.fillStyle = '#858585'; 
-  ctx.fillRect(0, canvas.height /2, 
-  canvas.width, canvas.height /2); 
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#E3E3E1';
+  ctx.fillRect(0, 0, canvas.width, canvas.height /2);
+  ctx.fillStyle = '#858585';
+  ctx.fillRect(0, canvas.height /2,
+  canvas.width, canvas.height /2);
 }
 
-function castRays() { 
-  var angleBetweenRays = 
+function castRays() {
+  var angleBetweenRays =
   ((player.fov*180/Math.PI) / canvas.width)*
-  Math.PI /180; 
-  var dist;   
-  var angle = addRotToAngle(player.fov /2, 
+  Math.PI /180;
+  var dist;
+  var angle = addRotToAngle(player.fov /2,
   player.rot); //(pos+dir+plane)
   for (var i = 0; i < canvas.width;i++){
-    castSingleRay(angle, i); 
+    castSingleRay(angle, i);
     angle = addRotToAngle
     (-angleBetweenRays, angle);
   }
 }
 
-function castSingleRay(angle, row) { 
-  var facingRight = 
-  (angle < 90* Math.PI /180 || 
-  angle > 270 * Math.PI /180); 
-  var facingUp = (angle < 180 * 
-  Math.PI /180); 
-  var x = 0; 
+function castSingleRay(angle, row) {
+  var facingRight =
+  (angle < 90* Math.PI /180 ||
+  angle > 270 * Math.PI /180);
+  var facingUp = (angle < 180 *
+  Math.PI /180);
+  var x = 0;
   var y = 0;
-  var dX = 0; 
+  var dX = 0;
   var dY = 0;
-  var xMap = 0; 
+  var xMap = 0;
   var yMap = 0;
-  var dist = 0; 
-  var img = 0; 
-  var offset = 0; 
-  var slope =  1 / (Math.sin(-angle) 
-  / Math.cos(-angle)); 
+  var dist = 0;
+  var img = 0;
+  var offset = 0;
+  var slope =  1 / (Math.sin(-angle)
+  / Math.cos(-angle));
   y = facingUp ? Math.floor(player.y) :
-   Math.ceil(player.y); 
-  x = player.x + (y -player.y) *slope; 
-  dY = facingUp ? -1 : 1; 
-  dX = dY * slope; 
-  while (x >= 0 && x < map[0].length && 
+   Math.ceil(player.y);
+  x = player.x + (y -player.y) *slope;
+  dY = facingUp ? -1 : 1;
+  dX = dY * slope;
+  while (x >= 0 && x < map[0].length &&
   y >= 0 && y < map.length)
   {
     yMap = Math.floor(y + (facingUp ? -1 : 0));
     xMap = Math.floor(x);
-    if (hitWall(xMap, yMap)){ 
+    if (hitWall(xMap, yMap)){
     //DDA в здании!
-      dist = Math.abs((player.x - x) / 
-      Math.cos(angle)); 
+      dist = Math.abs((player.x - x) /
+      Math.cos(angle));
       //Спасайте дистанции
-      offset = x % 1; 
-      img = map[yMap][xMap]; 
+      offset = x % 1;
+      img = map[yMap][xMap];
       break;
     }
-    x += dX; 
+    x += dX;
     //сдвигаемся на коэфициент
     y += dY;
   }
 
-  var slope = (Math.sin(-angle) / 
+  var slope = (Math.sin(-angle) /
   Math.cos(-angle)); //наклон
-  x = facingRight ? Math.ceil(player.x) 
+  x = facingRight ? Math.ceil(player.x)
   : Math.floor(player.x);
   y = player.y + (x -player.x) *slope;
   dX = facingRight ? 1 : -1;
   dY = dX * slope;
-  while (x >= 0 && x < map[0].length && 
+  while (x >= 0 && x < map[0].length &&
   y >= 0 && y < map.length)
   {
-    xMap = Math.floor(x + (facingRight ? 
+    xMap = Math.floor(x + (facingRight ?
     0 : -1));
     yMap = Math.floor(y);
     if (hitWall(xMap, yMap)){
@@ -2487,67 +2497,67 @@ function castSingleRay(angle, row) {
     x += dX;
     y += dY;
   }
-  if (dist == 0 || dist > 
+  if (dist == 0 || dist >
   Math.abs((player.y - y) / Math.sin(angle))){
     dist = Math.abs((player.y - y) / Math.sin(angle));
     img = map[yMap][xMap];
     offset = y %1;
   }
-  dist = dist * Math.cos(player.rot - angle); 
-  drawRay(dist, row, offset, img); 
+  dist = dist * Math.cos(player.rot - angle);
+  drawRay(dist, row, offset, img);
   //И отрисовываем
 
 }
 
-function drawRay(dist, x, offset, img) {   
-  var distanceProjectionPlane = (canvas.width /2) / 
-  Math.tan((player.fov /2)); 
-  var sliceHeight = 1 / dist * 
-  distanceProjectionPlane; 
+function drawRay(dist, x, offset, img) {
+  var distanceProjectionPlane = (canvas.width /2) /
+  Math.tan((player.fov /2));
+  var sliceHeight = 1 / dist *
+  distanceProjectionPlane;
   //Высота данной текстуры
   //выбор текстур
   switch(img){
-    case 1: ctx.drawImage(document.getElementById('wall'), 
-    offset*511, 0, 1, 512, x, (canvas.height /2) - 
+    case 1: ctx.drawImage(document.getElementById('wall'),
+    offset*511, 0, 1, 512, x, (canvas.height /2) -
     (sliceHeight /2), 1, sliceHeight);
       break; //рисуем текстуру с учётом всех наклонов
-	case 2: ctx.drawImage(document.getElementById('window'), 
-offset*511, 0, 1, 512, x, (canvas.height /2) - 
+	case 2: ctx.drawImage(document.getElementById('window'),
+offset*511, 0, 1, 512, x, (canvas.height /2) -
 (sliceHeight /2), 1, sliceHeight);
       break;
-	case 3: ctx.drawImage(document.getElementById('door'), 
-offset*511, 0, 1, 512, x, (canvas.height /2) - 
+	case 3: ctx.drawImage(document.getElementById('door'),
+offset*511, 0, 1, 512, x, (canvas.height /2) -
 (sliceHeight /2), 1, sliceHeight);
       break;
-	case 4: ctx.drawImage(document.getElementById('stand1'), 
-offset*511, 0, 1, 512, x, (canvas.height /2) - 
+	case 4: ctx.drawImage(document.getElementById('stand1'),
+offset*511, 0, 1, 512, x, (canvas.height /2) -
 (sliceHeight /2), 1, sliceHeight);
       break;
-	case 5: ctx.drawImage(document.getElementById('stand2'), 
-offset*511, 0, 1, 512, x, (canvas.height /2) - 
+	case 5: ctx.drawImage(document.getElementById('stand2'),
+offset*511, 0, 1, 512, x, (canvas.height /2) -
 (sliceHeight /2), 1, sliceHeight);
       break;
-	case 6: ctx.drawImage(document.getElementById('stand3'), 
-offset*511, 0, 1, 512, x, (canvas.height /2) - 
+	case 6: ctx.drawImage(document.getElementById('stand3'),
+offset*511, 0, 1, 512, x, (canvas.height /2) -
 (sliceHeight /2), 1, sliceHeight);
       break;
-	case 7: ctx.drawImage(document.getElementById('stand4'), 
-offset*511, 0, 1, 512, x, (canvas.height /2) - 
+	case 7: ctx.drawImage(document.getElementById('stand4'),
+offset*511, 0, 1, 512, x, (canvas.height /2) -
 (sliceHeight /2), 1, sliceHeight);
       break;
-case 8: ctx.drawImage(document.getElementById('GStand1'), 
-offset*511, 0, 1, 512, x, (canvas.height /2) - 
+case 8: ctx.drawImage(document.getElementById('GStand1'),
+offset*511, 0, 1, 512, x, (canvas.height /2) -
 (sliceHeight /2), 1, sliceHeight);
       break;
-case 9: ctx.drawImage(document.getElementById('GStand2'), 
-offset*511, 0, 1, 512, x, (canvas.height /2) - 
+case 9: ctx.drawImage(document.getElementById('GStand2'),
+offset*511, 0, 1, 512, x, (canvas.height /2) -
 (sliceHeight /2), 1, sliceHeight);
       break;
   }
 
 }
 
-function drawMap(){ 
+function drawMap(){
   ctx.clearRect(0, 0, map[0].length*5, map.length*5);
   ctx.fillStyle = 'rgb(255, 0, 0)';
   ctx.fillRect(player.x*5 -1, player.y*5 -1, 2, 2);
