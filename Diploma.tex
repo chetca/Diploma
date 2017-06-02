@@ -46,7 +46,6 @@
 \renewcommand{\@biblabel}[1]{#1.}
 \makeatother
 
-
 \begin{document}
 \begin{titlepage}
 \begin{center}
@@ -101,16 +100,33 @@
 \newpage    %Это введение
 \addcontentsline{toc}{chapter}{Введение}
 \chapter*{ВВЕДЕНИЕ}
-\hspace{\parindent}Интерактивные планы помещений - доступный и современный способ разобраться в незнакомом здании.
+\hspace{\parindent}Еcли зaглянуть в иcтоpию, тo мoжнo увидeть, чтo c момeнтa появлeния пepвых кoмпьютeрoв люди cтрeмилиcь
+вcячеcки увeличить спoсобы кoммуникации c ними, пpиблизившиcь к уpовню общeния чeловeкa c чeловeком. Этo общeниe 
+былo бы гоpaздо болee огpaничeнным, ecли бы нe иcпользовaло oдин из нaиболee пpоcтых cпоcобов - язык изобpaжeний, 
+обpaзов\cite{kotov}. Сeгодня гpaфичecкиe изобpaжeния нa экpaнe монитоpa cовpeмeнного пepcонaльного компьютepa cтaли для нac 
+ноpмой, cовepшeнно нeотъeмлeмым aтpибутом интepфeйca. Спeктp пpимeнeния компьютepной гpaфики, пoмимo cpeдcтвa интepфeйca 
+"чeловeк-мaшинa", чpeзвычaйно шиpок: от cоздaния peклaмных pоликов, компьютepных мультфильмoв и игp, кpоя одeжды, 
+мaлых и монумeнтaльных фоpм дизaйнa, компьютepной живопиcи до визуaлизaции peзультaтов нaучных изыcкaний \cite{demin}. 
+Можно c увepeнноcтью cкaзaть, что популяpноcть Интeрнета, во мнoгом объяcняeтcя шиpоким пpимeнeниeм гpaфики\cite{bereskov}.\\
+
+Нa ceгодняшний дeнь, рынoк пpогpaммного и aппapaтного обecпeчeния компьютepной гpaфики - oдин из caмых динaмичных\cite{lord}. 
+Oб этoм мoжно cудить пo объeму литepaтуpы и чиcлу cepвиcов Интернeта, поcвящeнных тaк или инaчe компьютepной гpaфикe. 
+Можнo c увepeнноcтью cкaзaть, чтo, кaк минимум, половинa из пpодaвaeмой литepaтуpы по пpогpaммному обecпeчeнию\cite{pere}, 
+поcвящeнa опиcaнию гpaфичecких пaкeтов. Этo трeбование сoвременного мирa, рaзвития нaуки кoмпьютeризaции, 
+кoмпьютерной грaфики и внeдрению кoмпьютерных тeхнологий в нaшу жизнь. Эти изменeния кoснулись вceх oблаcтей 
+челoвеческой жизни.\\
+
+Одним из таких примеров компьютеризации служат интерактивные карты. Интерактивные планы помещений - доступный и современный 
+способ разобраться в незнакомом здании.
 Сегодня интерактивная карта в отличие от обычной плоской в виде изображения отличается тем, что ее элементами можно
 управлять. Пользователь, находясь на странице, может свободно перемещаться по карте, находить объекты, схему прохода
 и просматривать информацию. При необходимости элементы карты могут включать в себя помимо реальных физических объектов
-(дома, улицы, парки, дороги и т.д.) дополнительно текстовую информацию, видеозаписи и ссылки на сайты. \\
+(дома, улицы, парки, дороги и т.д.) дополнительно текстовую информацию, видеозаписи и ссылки на сайты\cite{schirkov}. \\
 
 К таким интерактивным планам предъявляются весьма суровые системные требования: поскольку они предназначены
 для самых разных платформ, и должны запускаться не только на можных десктопах, на и на мобильных устройствах, слабых
-нодах типа Raspberry Pi, встраивымх системах типа Arduino, а так же крутиться на сайтах. Не на всех из вышеперечисленых
-платформ может запускаться стандартная для современных 3D-визуализаций библиотека OpenGL(или WebGL в случае сайтов). \\
+нодах типа Raspberry Pi, встраивымх системах типа Arduino, а так же крутиться на сайтах\cite{nikulin}. Не на всех из вышеперечисленых
+платформ может запускаться стандартная для современных 3D-визуализаций библиотека OpenGL(или WebGL в случае сайтов).\cite{petrov} \\
 
 Поэтому разработка проекта для 3D визуализации здания по 2D плану помещения весьма актуальна. Вопросы рассмотреные в данной
 работе требуют крайне серьёзных исследований, ибо за подобными технологиями будущее\cite{hitr}. \\
@@ -122,14 +138,6 @@
  --Модификация алгоритма рейкастинга для вещественных координат;\\
  --Разработка математической модели для рейкастового рендерера;\\
  --Изучение и освоение технологии кросс-компиляции $Emscripten$;\\
-
- \textbf{Объектом} исследования является
- задача построения псевдотрёхмерной картинки.\\
-
- \textbf{Предметом} исследования является
- изучение основных принципов построения псевдотрёхмерной картинки
- методом бросания лучей.\\
-
 
 \newpage    %1 глава
 \chapter{Постановка задачи}
@@ -150,12 +158,12 @@
 быть система поиска маршрута в духе "как пройти из одной аудитории в другую кратчайшим маршрутом". Именно поэтому к проекту были суровые
 требования выполнения всех вышеперечисленных пунктов. \\
 
-Для нашего проекта необходимо было создать подобную интерактивную карту с видом от первого лица. Поскольку современные абитуриенты 
-очень любят компьютерные игры, то в подобных планах с видом от первого лица им будет намного проще ориентироваться чем на обычной 
-"традиционной" бумажной или электронной карте. Необходимо создать два вида - как и вид от первого лица, так и вид миникарты, схожей 
-с обычной "традицонной" картой. 3D вид карты должен иметь хорошую четкость, что бы всегда в любой момент было понятно где находится 
-камера, что бы сам объёмный вид мало отличался от реальных прототипов. Желательна реализация таких интерактивных фишек как "поиск 
-пути по карте" - что бы люди могли указав необходимую аудиторию получить оптимальный путь к ней. Так же, как было упомянуто выше, 
+Для нашего проекта необходимо было создать подобную интерактивную карту с видом от первого лица. Поскольку современные абитуриенты
+очень любят компьютерные игры, то в подобных планах с видом от первого лица им будет намного проще ориентироваться чем на обычной
+"традиционной" бумажной или электронной карте. Необходимо создать два вида - как и вид от первого лица, так и вид миникарты, схожей
+с обычной "традицонной" картой. 3D вид карты должен иметь хорошую четкость, что бы всегда в любой момент было понятно где находится
+камера, что бы сам объёмный вид мало отличался от реальных прототипов. Желательна реализация таких интерактивных фишек как "поиск
+пути по карте" - что бы люди могли указав необходимую аудиторию получить оптимальный путь к ней. Так же, как было упомянуто выше,
 такой план желательно делать кроссплатформенным.
 
 \section{Выбор основного способа реализации}
@@ -2165,141 +2173,93 @@ public: Player *player;
 \begin{lstlisting}
 #ifndef SCENE_H
 #define SCENE_H
-
 #include "ssegment.h"
 #include "movablesegment.h"
-
 #include <QPointF>
 #include <QVector>
 #include <QtMath>
 #include <QRectF>
-
-//#include <boost/geometry.hpp>
-
 class Scene
 {
 public:
     Scene();
-
     QVector<MovableSegment> getMapSegment();
     MovableSegment getMapSegment(int i);
     void setMapSegment
     (const QVector<MovableSegment> &value);
-
     int getCnt();
     void setCnt(int value);
     void swapSegmentsEnds(int i);
     void update(double time);
-
 private:
     QVector<MovableSegment> mapSegment;
-
 public:
     QPointF ps;
     int cnt;
 };
-
 #endif // SCENE_H
-
 \end{lstlisting}
 
 Файл ssegment.h
 \begin{lstlisting}
 #ifndef SSEGMENT_H
 #define SSEGMENT_H
-
 #include <QPointF>
 #include <cmath>
 #include <algorithm>
-
-//#include "movablesegment.h";
-
 class SSegment
 {
 public:
     SSegment();
     SSegment(QPointF a, QPointF b, int tx=0);
-
     double getSize();
-
     QPointF A();
     void setA(const QPointF &value);
-
     QPointF B();
     void setB(const QPointF &value);
-
     void swapEnds();
-
     int getTexture() const;
     void setTexture(int value);
-
     virtual void update(double time);
-
 private:
     QPointF a,b;
     int texture;
 };
-
 #endif // SSEGMENT_H
-
 \end{lstlisting}
 
 Файл rayc.js
 \begin{lstlisting}
-//Это типа псевдо-ООП
 var map=second.map;
-
-var previousTime = Date.now(); //фремя предыдущего кадра
-var lag = 0.0; //задержка между временем
-var MS_PER_UPDATE = 1000 / 60; //фпс
-
+var previousTime = Date.now();
+var lag = 0.0; 
+var MS_PER_UPDATE = 1000 / 60; 
 var rayc = function() {
-  var currentTime = Date.now(); //время текущего кадрв
+  var currentTime = Date.now(); 
   var elapsedTime =
-  currentTime - previousTime; //разница между временем кадров
+  currentTime - previousTime; 
   previousTime = currentTime;
-  //при обновлении время текущего кадра становится предыдущим
-  lag += elapsedTime; //суммируем лаги
+  lag += elapsedTime;
 
-  processInput(); //запуск движения
-
-  //следующий код является по идее костылём от лагов,
-  //но он недопилен
+  processInput(); 
   while (lag >= MS_PER_UPDATE) {
-  //пока лагов больше чем фпс(то есть пока тормозит)
-    update();
-    //заглушка которая фиксит тормоза - обновлялка кадров
-    lag -= MS_PER_UPDATE; //уменьшаем лаги
+    update(); lag -= MS_PER_UPDATE; 
   }
-
-  render(lag / MS_PER_UPDATE); //запускаем рендер
-
-  requestAnimationFrame(rayc);//Запускаем отрисовку
+  render(lag / MS_PER_UPDATE); 
+  requestAnimationFrame(rayc);
 }
-
-function update(){} //Заглушка
-
+function update(){} 
 var player={
-    x : 46, //Координаты игрока
+    x : 46,
     y : 7,
     mov : 0,
-    //движение: 1 - вперёд, -1 назад,
-    //0 - стоим на месте(для клавиш)
     dir : 0,
-    //Повороты: 1 - вправо, -1 - влево,
-    //0 - стоим на месте(тоже дял клавиш)
     rot : -1.5,
-    //угол поворота камеры в начале
     speed: 0.05,
-    //скорость движения камеры
     sprint: 0,
-    //бег: 1 - бежим, 0 - идём(придумал Дугар)
     sprintFactor: 2,
-    //коэфициент увеличения движения при беге
     rotSpeed: 2 * Math.PI / 180,
-    //скорость поворотов
     fov : 60 * Math.PI / 180,
-    //Угол обзора(тут косяк с фишаем)
     flatmap : 0,
   };
 
@@ -2307,86 +2267,59 @@ function bindKeys(){
   document.onkeydown = function(e){
     e = e || window.event;
     switch(e.keyCode){
-      case 65: //A
+      case 65: 
       case 37: player.dir = 1;
-      //стрелка влево
         break;
-      case 87: //W
+      case 87: 
       case 38: player.mov = 1;
-      //стрелка вверх
         break;
-      case 68: //D
+      case 68:
       case 39: player.dir = -1;
-      //стрелка вправо
         break;
-      case 83: //S
+      case 83:
       case 40: player.mov = -1;
-      //стрелка вниз
         break;
       case 16: player.sprint = 1;
-      //Shift
       break;
       case 77: player.flatmap =
       (player.flatmap) ? 0 : 1;
       break;
-      //Прикольная фича
-      //для показывания плоской карты
     }
 
   };
   document.onkeyup = function(e){
     e = e || window.event;
     switch(e.keyCode){
-      case 65: //A
-      case 37: //стрелка влево
-      case 68: //D
-      case 39: //стрелка вправо
+      case 65: case 37: 
+      case 68: case 39: 
         player.dir = 0;
         break;
-      case 87: //W
-      case 38: //стрелка вверх
-      case 83: //S
-      case 40: //стрелка вниз
+      case 87: case 38: 
+      case 83: case 40:
         player.mov = 0;
         break;
-      case 16: //Shift
+      case 16: 
         player.sprint = 0;
         break;
     }
   };
 }
-
 function processInput(){
   var step = player.mov *
   player.speed * (player.sprint +1) *
   player.sprintFactor;
-  //шаг вперёд или назад
   var rotStep = player.dir *
   player.rotSpeed;
-  //поворот при шаге
-
   player.rot = addRotToAngle(rotStep, player.rot);
-  //И получаем направление куда направлена камера
-
   var xNew = player.x + step * Math.cos(player.rot);
-  //расчитываем новые координаты игрока
   var yNew = player.y - step * Math.sin(player.rot);
-
-
-  if (!(hitWall(xNew, yNew))){  //Если тут не стенка
-    player.x = xNew;  //Делаем шаг туда
-    player.y = yNew;
+  if (!(hitWall(xNew, yNew))){  
+    player.x = xNew; player.y = yNew;
   }
 }
 
 function addRotToAngle(rot, angle){
-//Функция нормализирования угла
-//(Этого не хватало в сишной версии движка)
-  //Это что-то типа (pos+dir) в сишной версии
   var newAngle = angle + rot;
-  //Итоговый угол получается из суммы угла
-  //начального и угла полученого после поворота
-  //Если получившийся угол:
   if (newAngle < 0){
   //отрицательным, то
     return newAngle + 360 * Math.PI /180;
@@ -2396,21 +2329,7 @@ function addRotToAngle(rot, angle){
   }
   return newAngle;
 }
-
 function hitWall(x, y) {
-  /*
-  if (x < 0 || x >= map[0].length ||
-  y < 0 || y >= map.length){
-    return true;
-  }
-  */
-  /*
-  if(map[Math.floor(y)][Math.floor(x)] == 0 ||
-  map[Math.floor(y)][Math.floor(x)] > 1)
-	  return false;
-  else
-	  return true;
-  */
   return map[Math.floor(y)][Math.floor(x)] != 0;
 }
 function render(){
@@ -2426,7 +2345,6 @@ function drawBackground(){
   ctx.fillRect(0, canvas.height /2,
   canvas.width, canvas.height /2);
 }
-
 function castRays() {
   var angleBetweenRays =
   ((player.fov*180/Math.PI) / canvas.width)*
@@ -2440,7 +2358,6 @@ function castRays() {
     (-angleBetweenRays, angle);
   }
 }
-
 function castSingleRay(angle, row) {
   var facingRight =
   (angle < 90* Math.PI /180 ||
@@ -2469,19 +2386,14 @@ function castSingleRay(angle, row) {
     yMap = Math.floor(y + (facingUp ? -1 : 0));
     xMap = Math.floor(x);
     if (hitWall(xMap, yMap)){
-    //DDA в здании!
       dist = Math.abs((player.x - x) /
       Math.cos(angle));
-      //Спасайте дистанции
       offset = x % 1;
       img = map[yMap][xMap];
       break;
     }
-    x += dX;
-    //сдвигаемся на коэфициент
-    y += dY;
+    x += dX; y += dY;
   }
-
   var slope = (Math.sin(-angle) /
   Math.cos(-angle)); //наклон
   x = facingRight ? Math.ceil(player.x)
@@ -2509,58 +2421,60 @@ function castSingleRay(angle, row) {
   }
   dist = dist * Math.cos(player.rot - angle);
   drawRay(dist, row, offset, img);
-  //И отрисовываем
-
 }
-
 function drawRay(dist, x, offset, img) {
   var distanceProjectionPlane = (canvas.width /2) /
   Math.tan((player.fov /2));
   var sliceHeight = 1 / dist *
   distanceProjectionPlane;
-  //Высота данной текстуры
-  //выбор текстур
   switch(img){
-    case 1: ctx.drawImage(document.getElementById('wall'),
+    case 1: 
+    ctx.drawImage(document.getElementById('wall'),
     offset*511, 0, 1, 512, x, (canvas.height /2) -
     (sliceHeight /2), 1, sliceHeight);
       break; //рисуем текстуру с учётом всех наклонов
-	case 2: ctx.drawImage(document.getElementById('window'),
+	case 2: 
+ctx.drawImage(document.getElementById('window'),
 offset*511, 0, 1, 512, x, (canvas.height /2) -
 (sliceHeight /2), 1, sliceHeight);
       break;
-	case 3: ctx.drawImage(document.getElementById('door'),
+	case 3: 
+ctx.drawImage(document.getElementById('door'),
 offset*511, 0, 1, 512, x, (canvas.height /2) -
 (sliceHeight /2), 1, sliceHeight);
       break;
-	case 4: ctx.drawImage(document.getElementById('stand1'),
+	case 4: 
+ctx.drawImage(document.getElementById('stand1'),
 offset*511, 0, 1, 512, x, (canvas.height /2) -
 (sliceHeight /2), 1, sliceHeight);
       break;
-	case 5: ctx.drawImage(document.getElementById('stand2'),
+	case 5: 
+ctx.drawImage(document.getElementById('stand2'),
 offset*511, 0, 1, 512, x, (canvas.height /2) -
 (sliceHeight /2), 1, sliceHeight);
       break;
-	case 6: ctx.drawImage(document.getElementById('stand3'),
+	case 6: 
+ctx.drawImage(document.getElementById('stand3'),
 offset*511, 0, 1, 512, x, (canvas.height /2) -
 (sliceHeight /2), 1, sliceHeight);
       break;
-	case 7: ctx.drawImage(document.getElementById('stand4'),
+	case 7: 
+ctx.drawImage(document.getElementById('stand4'),
 offset*511, 0, 1, 512, x, (canvas.height /2) -
 (sliceHeight /2), 1, sliceHeight);
       break;
-case 8: ctx.drawImage(document.getElementById('GStand1'),
+case 8: 
+ctx.drawImage(document.getElementById('GStand1'),
 offset*511, 0, 1, 512, x, (canvas.height /2) -
 (sliceHeight /2), 1, sliceHeight);
       break;
-case 9: ctx.drawImage(document.getElementById('GStand2'),
+case 9: 
+ctx.drawImage(document.getElementById('GStand2'),
 offset*511, 0, 1, 512, x, (canvas.height /2) -
 (sliceHeight /2), 1, sliceHeight);
       break;
   }
-
 }
-
 function drawMap(){
   ctx.clearRect(0, 0, map[0].length*5, map.length*5);
   ctx.fillStyle = 'rgb(255, 0, 0)';
@@ -2574,11 +2488,9 @@ function drawMap(){
       }
     }
   }
-
 }
 bindKeys();
 requestAnimationFrame(rayc);
-
 \end{lstlisting}
 
 \end{document} 
