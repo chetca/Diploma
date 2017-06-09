@@ -71,6 +71,17 @@
 \end{block}
 
 \end{frame}
+\begin{frame}\frametitle{Метод бросания лучей}
+
+Метод бросания лучей (англ. raycasting, рейкастинг) - один из методов рендеринга в компьютерной графике,
+при котором сцена строится на основе замеров пересечения лучей с визуализируемой поверхностью.
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=11cm]{rayc}\\
+\end{center}
+\end{figure}
+
+\end{frame}
 \begin{frame}\frametitle{2D вид карты}
 
 \begin{figure}[h!]
@@ -108,9 +119,6 @@ $\text{для каждой } i \in [1,n]$:\\
 \end{minipage}
 
 \end{frame}
-\begin{frame}\frametitle{Интерактивность карты}
-
-\end{frame}
 \begin{frame}\frametitle{BSP-дерево}
 
 \begin{figure}[h!]
@@ -122,12 +130,127 @@ $\text{для каждой } i \in [1,n]$:\\
 \end{frame}
 \begin{frame}\frametitle{Поиск маршрута}
 
+\begin{minipage}{0.49 \linewidth}
 
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=5cm]{image1} 
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=5cm]{image2}
+\end{center}
+\end{figure}
+
+\begin{center}
+Соединение точек $A$ и $B$
+\end{center}
+
+\end{minipage}
+\hfill
+\begin{minipage}{0.49 \linewidth}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=6cm]{image3}
+\end{center}
+\end{figure}
+
+\begin{center}
+Существование рёбер
+\end{center}
+
+\end{minipage}
 
 \end{frame}
-\begin{frame}\frametitle{Алгоритм Дейкстры}
+\begin{frame}\frametitle{Поиск маршрута}
 
+\begin{minipage}{0.49 \linewidth}
 
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=5cm]{image4}
+\end{center}
+\end{figure}
+
+\begin{center}
+Cитуация “проскакивания через углы стен”
+\end{center}
+
+\end{minipage}
+\hfill
+\begin{minipage}{0.49 \linewidth}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=6cm]{image5}
+\end{center}
+\end{figure}
+
+\begin{center}
+Включение окружностей на концы отрезков
+\end{center}
+
+\end{minipage}
+
+\end{frame}
+\begin{frame}\frametitle{Поиск маршрута}
+
+\begin{minipage}{0.49 \linewidth}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=5cm]{image5`}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=5cm]{image6}
+\end{center}
+\end{figure}
+
+\end{minipage}
+\hfill
+\begin{minipage}{0.49 \linewidth}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=6cm]{image8}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=5cm]{image9}
+\end{center}
+\end{figure}
+
+\end{minipage}
+\begin{center}
+Построение графа на концах сегментов
+\end{center}
+\end{frame}
+\begin{frame}\frametitle{Поиск маршрута}
+
+\begin{center}\textbf{Алгоритм построения графа для поисков маршрута на карте}\end{center}
+\textit{
+1) Для каждой точки, являющейся концом отрезка из $S$ найти $k$ точек равномерно расположенных на окружности радиуса $r+d$
+с в этой точке. Добавить полученные точки в $V$.\\
+}
+\textit{
+2) Для каждого отрезка для расстояния $r$ найти эквидистанту, приблизить её многоугольником. Удалить из $S$ начальные отрезки
+и добавить отрезки, являющиеся сторонами полученных многоугольников.\\
+}
+\textit{
+3) Удалить из $V$ вершины, лежащие внутри полученных многоугольников.\\
+}
+\textit{
+4) Для каждой пары вершин из $V$, рассмотреть отрезок их соеденяющий. Если этот отрезок не пересекает никакой отрезок из $S$,
+то добавить ребро между этими вершинами в $E$.\\
+}
 
 \end{frame}
 \begin{frame}\frametitle{Диаграмма компонентов UML}
