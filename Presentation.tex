@@ -46,43 +46,17 @@
 \titlepage
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}\frametitle{Метод бросания лучей}
-Метод бросания лучей (англ. raycasting, рейкастинг) - один из методов рендеринга в компьютерной графике,
-при котором сцена строится на основе замеров пересечения лучей с визуализируемой поверхностью.
-\begin{figure}[h!]
-\begin{center}
-\includegraphics[width=11cm]{rayc}\\
-\end{center}
-\end{figure}
-\end{frame}
-\begin{frame}\frametitle{История}
-Метод бросания лучей в публикациях по компьютерной графике впервые был
-применён в 1982 г. для отрисовки моделей конструктивной блочной геометрии\\
+\begin{frame}\frametitle{Введение}
 
 \begin{figure}[h!]
 \begin{center}
-\includegraphics[width=10cm]{ScottDRoth}\\
+\includegraphics[width=11cm]{2gis}\\
 \end{center}
 \end{figure}
-Roth, Scott D. (February 1982), "Ray Casting for Modeling Solids", Computer Graphics and Image Processing Т. 18: 109–144
-\end{frame}
-\begin{frame}\frametitle{История}
-Для ПК рейкастинг в 1992 г. популяризировала игра Wolfenstein 3D
-\begin{figure}[h!]
-\begin{center}
-\includegraphics[width=10cm]{Wolf3D}\\
-\end{center}
-\end{figure}
-\end{frame}
-\begin{frame}\frametitle{История}
-Wolfenstein 3D реализует игровую сцену двумерной моделью, которая визуализируется в 3D
-\begin{figure}[h!]
-\begin{center}
-\includegraphics[width=10cm]{WolfLevel}\\
-\end{center}
-\end{figure}
+
 \end{frame}
 \begin{frame}\frametitle{Цели и задачи}
+
 \begin{block}{\textbf{Цель работы}}
 Создание кроссплатформеного псевдотрёхмерного движка (англ. engine) для
 3D визуализации помещений и маршрутов в них по 2D плану.
@@ -95,29 +69,19 @@ Wolfenstein 3D реализует игровую сцену двумерной моделью, которая визуализируетс
 \item платформа для возможной реализации дополнительных сервисов и кроссплатформености
 \end{itemize}
 \end{block}
+
 \end{frame}
-\begin{frame}\frametitle{План этажа: Desktop}
+\begin{frame}\frametitle{2D вид карты}
+
 \begin{figure}[h!]
 \begin{center}
-\includegraphics[width=11cm]{raycDesktop}
+\includegraphics[width=9cm]{jpg2svg}\\
 \end{center}
 \end{figure}
+
 \end{frame}
-\begin{frame}\frametitle{План этажа: Web}
-\begin{figure}[h!]
-\begin{center}
-\includegraphics[width=11cm]{raycWeb}
-\end{center}
-\end{figure}
-\end{frame}
-\begin{frame}\frametitle{Кросс-компиляция}
-\begin{figure}[h!]
-\begin{center}
-\includegraphics[width=11cm]{AllIn.eps}
-\end{center}
-\end{figure}
-\end{frame}
-\begin{frame}\frametitle{Описание метода: основная идея}
+\begin{frame}\frametitle{Описание метода бросания лучей}
+
 \begin{minipage}{0.49 \linewidth}
 \begin{figure}[h!]
 \begin{center}
@@ -142,38 +106,49 @@ $\text{для каждой } i \in [1,n]$:\\
 \hphantom{мммм}$\text{отобразить-отрезок}(i, h)$\\
 }
 \end{minipage}
+
+\end{frame}
+\begin{frame}\frametitle{Интерактивность карты}
+
+\end{frame}
+\begin{frame}\frametitle{BSP-дерево}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=11cm]{bsp}
+\end{center}
+\end{figure}
+
+\end{frame}
+\begin{frame}\frametitle{Поиск маршрута}
+
+
+
+\end{frame}
+\begin{frame}\frametitle{Алгоритм Дейкстры}
+
+
+
+\end{frame}
+\begin{frame}\frametitle{Диаграмма компонентов UML}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=11cm]{uml}
+\end{center}
+\end{figure}
+
+\end{frame}
+\begin{frame}\frametitle{Кросс-компиляция}
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=11cm]{web-ds}
+\end{center}
+\end{figure}
 \end{frame}
 
-\begin{frame}\frametitle{Описание метода: эффект <<рыбьего глаза>>}
-\begin{minipage}{0.49 \linewidth}
-\begin{figure}[h!]
-\begin{center}
-\includegraphics[width=4cm]{fishEye_L}\\ %фишай
-\end{center}
-\end{figure}
-\textit{
-$\text{для каждой } i \in [1,n]$:\\
-{\color{red}\hphantom{мммм}$l \leftarrow \text{расст-до-стены} (\overrightarrow{P}, \overrightarrow{r_i})$}\\
-\hphantom{мммм}$h \leftarrow \text{высота-отрезка}(l)$\\
-\hphantom{мммм}$\text{отобразить-отрезок}(i, h)$\\
-}
-\end{minipage}
-\hfill
-\begin{minipage}{0.49 \linewidth}
-\begin{figure}[h!]
-\begin{center}
-\includegraphics[width=4cm]{fishEye_R}\\ %ноуфишай
-\end{center}
-\end{figure}
-\textit{
-$\text{для каждой } i \in [1,n]$:\\
-{\color{red}\hphantom{мммм}$l \leftarrow \text{расст-до-стены} (\overrightarrow{a_i} - \overrightarrow{PH}, \overrightarrow{PH})$}\\
-\hphantom{мммм}$h \leftarrow \text{высота-отрезка}(l)$\\
-\hphantom{мммм}$\text{отобразить-отрезок}(i, h)$\\
-}
-\end{minipage}
-\end{frame}
 \begin{frame}\frametitle{Результаты работы}
+
 \begin{block}{\textbf{Результаты работы}}
 \begin{itemize}
 \item Модифицирован алгоритм рейкастинга для работы в вещественных координатах
@@ -182,8 +157,10 @@ $\text{для каждой } i \in [1,n]$:\\
 \item Проект реализован на многих платформах
 \end{itemize}
 \end{block}
+
 \end{frame}
 \begin{frame}\frametitle{Заключение}
+
 Проект разрабатывается открыто, исходные коды доступны по ссылке:\\
 \begin{center}
 {\color{blue} \huge{\underline{https://github.com/chetca/Raycasting\_Plan}}}
@@ -197,9 +174,10 @@ Cсылка на web-реализацию:\\
 \begin{center}
 {\color{blue} \huge{\underline{http://imi.bsu.ru/lps/projects/raycasting/}}}
 \end{center}
-\end{frame}
 
+\end{frame}
 \begin{frame}\frametitle{Заключение}
+
 \begin{center}
 \center\Huge\textbf{Спасибо за внимание!}
 \end{center}
@@ -209,6 +187,66 @@ Cсылка на web-реализацию:\\
 \Large{3D визуализация 2D плана помещения
  методом бросания лучей}
 \end{center}
+
+\end{frame}
+\begin{frame}\frametitle{Производительность}
+
+\begin{table}[h!]
+\caption{Замеры производительности на ПК}
+\label{tabular:timesandtenses}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{OS} & \textbf{Memory} & \textbf{CPU} & \textbf{FPS} \\
+\hline
+$Windows~10$ & 25 Mbyte & 10\% & 27-41 \\
+\hline
+$Ubuntu~16.04.2~LTS$ & 17.4 Mbyte & 8\% & 34-44 \\
+\hline
+$FreeBSD~11.0$ & 18 Mbyte & 8\% & 32-47 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[h!]
+\caption{Замеры производительности на мобильных устройствах}
+\label{tabular:timesandtenses}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Model} & \textbf{Antutu Test} &  \textbf{FPS} \\
+\hline
+$Samsung~Galaxy~A5$ & 59834 & 24-30 \\
+\hline
+$Highscreen~Power~Ice~Evo$ & 31672 & 20-26 \\
+\hline
+$Samsung~Galaxy~Star~Plus$ & 8012 & 12-20 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[h!]
+\caption{Замеры производительности в различных браузерах}
+\label{tabular:timesandtenses}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Browser} & \textbf{Memory} &  \textbf{FPS} \\
+\hline
+$Mozilla~Firefox$ & 25.4 Mbyte & 42-60 \\
+\hline
+$Chromium$ & 28 Mbyte & 39-56 \\
+\hline
+$Safari$ & 28 Mbyte & 39-56 \\
+\hline
+$Microsoft~Edge$ & 30.6 Mbyte & 34-51 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
 \end{frame}
 
 \end{document}
